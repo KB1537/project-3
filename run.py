@@ -155,3 +155,53 @@ def total_sales_for_date():
         print(f"\nTOTAL REVENUE FOR {date_input}: £{total_revenue:.2f}")
 
 
+# ---------------------------------------------------------- #
+#                      INVENTORY ACTIONS                     #
+# ---------------------------------------------------------- #
+
+def view_inventory(inventory):
+    print("\n--- INVENTORY ---")
+    for item in inventory:
+        print(
+            f"{item['sku']} | {item['name']} | Stock: {item['stock']} "
+            f"| £{item['price']:.2f}"
+        )
+
+
+def find_item(inventory, sku):
+    for item in inventory:
+        if item["sku"].lower() == sku.lower():
+            return item
+    return None
+
+
+def update_stock(inventory):
+    """
+    Reduce stock, record as a sale, then push updates to Google Sheets.
+    """
+    sku = input("Enter SKU: ").strip()
+    item = find_item(inventory, sku)
+
+    if not item:
+        print("❌ SKU not found.")
+        return
+
+    try:
+        qty = int(input("Quantity sold: "))
+    except ValueError:
+        print("❌ Invalid quantity.")
+        return
+
+    if qty > item["stock"]:
+        print("❌ Not enough stock!")
+        return
+
+    # Reduce local stock
+    item["stock"] -= qty
+    print(f"✓ New stock level: {item['stock']}")
+
+    # Record sale in Google Sheets
+    record_sale(item["sku"], qty, item["price"])
+
+    # Push updated inventory back to Sheets
+    save_inventory(inventory)
