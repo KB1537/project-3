@@ -83,3 +83,27 @@ def save_inventory(inventory):
 
     INVENTORY_WS.update('A2', rows)
     print("✓ Inventory synced to Google Sheets.")
+
+
+# ---------------------------------------------------------- #
+#                     RECORD SALES DATA                      #
+# ---------------------------------------------------------- #
+
+def record_sale(sku, qty_sold, price, customer="Walk-in"):
+    """
+    Append a sale to the Sales sheet.
+    Automatically calculates Total Price.
+    """
+    date = datetime.now().strftime("%Y-%m-%d")
+    total_price = qty_sold * price
+
+    SALES_WS.append_row([
+        date, sku, qty_sold, price, total_price, customer
+    ])
+
+    print(f"✓ Sale recorded: £{total_price:.2f}")
+
+
+
+
+
