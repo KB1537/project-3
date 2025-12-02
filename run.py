@@ -243,12 +243,22 @@ def update_stock(inventory):
         print("❌ Not enough stock!")
         return
 
+
+    sale_date = input("Enter sale date (YYYY-MM-DD): ").strip()
+    
+    try:
+        datetime.strptime(sale_date, "%Y-%m-%d")
+    except ValueError:
+        print("❌ Invalid date format. Use YYYY-MM-DD.")
+        return
+    
+
     # Reduce local stock
     item["stock"] -= qty
     print(f"✓ New stock level: {item['stock']}")
 
     # Record sale in Google Sheets
-    record_sale(item["sku"], qty, item["price"])
+    record_sale(item["sku"], qty, item["price"],sale_date)
 
     # Push updated inventory back to Sheets
     save_inventory(inventory)
