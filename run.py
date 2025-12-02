@@ -205,3 +205,35 @@ def update_stock(inventory):
 
     # Push updated inventory back to Sheets
     save_inventory(inventory)
+
+
+# ---------------------------------------------------------- #
+#                        MENU SYSTEM                         #
+# ---------------------------------------------------------- #
+
+def main():
+    inventory = load_inventory()
+
+    while True:
+        print("\n--- MAIN MENU ---")
+        print("1. View Inventory")
+        print("2. Record Sale (Update Stock)")
+        print("3. Reload Data From Google Sheets")
+        print("4. Total Sales for a Date")  
+        print("5. Exit")                    
+
+        option = input("Choose an option: ")
+
+        if option == "1":
+            view_inventory(inventory)
+        elif option == "2":
+            update_stock(inventory)
+        elif option == "3":
+            inventory = load_inventory()
+        elif option == "4":
+            total_sales_for_date()
+        elif option == "5":
+            print("Goodbye!")
+            break
+        else:
+            print("❌ Invalid selection.")
