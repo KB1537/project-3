@@ -69,3 +69,17 @@ def load_inventory():
     print(f"✓ Loaded {len(inventory)} items from Google Sheets.")
     return inventory
 
+# ---------------------------------------------------------- #
+#                    SAVE INVENTORY BACK                     #
+# ---------------------------------------------------------- #
+
+def save_inventory(inventory):
+    """
+    Save the inventory list back to Google Sheets.
+    Overwrites sheet contents except header.
+    """
+    rows = [[item["sku"], item["name"], item["stock"], item["price"], item["category"]]
+            for item in inventory]
+
+    INVENTORY_WS.update('A2', rows)
+    print("✓ Inventory synced to Google Sheets.")
