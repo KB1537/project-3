@@ -21,7 +21,9 @@ from google.oauth2.service_account import Credentials
 
 
 
-# ---------------- GOOGLE SHEETS CONNECTION ---------------- #
+# ----------------------------------------------------------#
+#                  GOOGLE SHEETS CONNECTION                 #
+# ----------------------------------------------------------#
 
 SCOPE=[
  "https://www.googleapis.com/auth/spreadsheets",
@@ -39,6 +41,42 @@ GSPREAD_CLIENT=gspread.authorize(SCOPED_CREDS)
 SHEET=GSPREAD_CLIENT.open('Inventory_Manager')
 INVENTORY_WS = SHEET.worksheet("Inventory")
 SALES_WS = SHEET.worksheet("Sales")
+
+
+
+
+# ----------------------------------------------------------#
+#                  HELPER FUNCTIONS                         #
+# ----------------------------------------------------------#
+
+def clean_price(value):
+    """
+    Remove currency symbols and commas so the value can convert to a float.
+    Example: '£3,150.00' → 3150.00
+    """
+    if isinstance(value, (int, float)):
+        return float(value)
+    cleaned = (
+        value.replace("£", "")
+        .replace("$", "")
+        .replace(",", "")
+        .strip()
+    )
+    return float(cleaned)
+
+
+def validate_quantity(qty):
+    if qty <= 0:
+        raise ValueError("Quantity must be greater than zero.")
+    return qty
+
+
+def validate_date(date_str):
+    try:
+        datetime.strptime(date_str, "%Y-%m-%d")
+        return date_str
+    except ValueError:
+        raise ValueError("Invalid date. Use YYYY-MM-DD.")
 
 
 
@@ -147,7 +185,7 @@ def total_sales_for_date():
                 f"Total: £{total} | Customer: {customer}"
             )
 
-            total_revenue += float(total)
+            total_revenue += clean_price(total)
 
     if not found:
         print("No sales recorded for this date.")
