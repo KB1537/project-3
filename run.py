@@ -18,6 +18,7 @@ import os
 import gspread
 from datetime import datetime
 from google.oauth2.service_account import Credentials
+from tabulate import tabulate 
 
 
 
@@ -198,12 +199,20 @@ def total_sales_for_date():
 # ---------------------------------------------------------- #
 
 def view_inventory(inventory):
-    print("\n--- INVENTORY ---")
+    headers = ["SKU", "Name", "Stock", "Price (£)", "Category"]
+    table = []
+
     for item in inventory:
-        print(
-            f"{item['sku']} | {item['name']} | Stock: {item['stock']} "
-            f"| £{item['price']:.2f}"
-        )
+        table.append([
+            item['sku'],
+            item['name'],
+            item['stock'],
+            f"{item['price']:.2f}",
+            item['category']
+        ])
+
+    print("\n--- INVENTORY ---")
+    print(tabulate(table, headers=headers, tablefmt="grid"))
 
 
 def find_item(inventory, sku):
