@@ -104,6 +104,54 @@ def record_sale(sku, qty_sold, price, customer="Walk-in"):
     print(f"✓ Sale recorded: £{total_price:.2f}")
 
 
+# ---------------------------------------------------------- #
+#                 DAILY SALES REPORT FUNCTION                #
+# ---------------------------------------------------------- #
 
+def total_sales_for_date():
+    """
+    Ask the user for a date (YYYY-MM-DD), then show all sales for that day.
+    Displays SKU, Qty, Price, Total Price, Customer and daily revenue total.
+    """
+
+    date_input = input("Enter date (YYYY-MM-DD): ").strip()
+
+    # Validate date format
+    try:
+        datetime.strptime(date_input, "%Y-%m-%d")
+    except ValueError:
+        print("❌ Invalid date format. Use YYYY-MM-DD.")
+        return
+
+    # Read every row from the Sales sheet (skip header)
+    sales_data = SALES_WS.get_all_values()[1:]
+
+    print(f"\n--- SALES REPORT FOR {date_input} ---")
+
+    total_revenue = 0
+    found = False
+
+    for row in sales_data:
+        sale_date = row[0]
+
+        if sale_date == date_input:
+            found = True
+            sku = row[1]
+            qty = row[2]
+            price = row[3]
+            total = row[4]
+            customer = row[5] if len(row) > 5 else "Unknown"
+
+            print(
+                f"SKU: {sku} | Qty: {qty} | Price: £{price} | "
+                f"Total: £{total} | Customer: {customer}"
+            )
+
+            total_revenue += float(total)
+
+    if not found:
+        print("No sales recorded for this date.")
+    else:
+        print(f"\nTOTAL REVENUE FOR {date_input}: £{total_revenue:.2f}")
 
 
