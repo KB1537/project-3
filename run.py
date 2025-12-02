@@ -153,7 +153,7 @@ def total_sales_for_date():
     Displays SKU, Qty, Price, Total Price, Customer and daily revenue total.
     """
 
-    date_input = input("Enter date (YYYY-MM-DD): ").strip()
+    date_input = input("Enter date (YYYY-MM-DD):\n ").strip()
 
     # Validate date format
     try:
@@ -226,7 +226,7 @@ def update_stock(inventory):
     """
     Reduce stock, record as a sale, then push updates to Google Sheets.
     """
-    sku = input("Enter SKU: ").strip()
+    sku = input("Enter SKU:\n ").strip()
     item = find_item(inventory, sku)
 
     if not item:
@@ -234,7 +234,7 @@ def update_stock(inventory):
         return
 
     try:
-        qty = int(input("Quantity sold: "))
+        qty = int(input("Quantity sold:\n "))
     except ValueError:
         print("❌ Invalid quantity.")
         return
@@ -272,7 +272,7 @@ def main():
         print("4. Total Sales for a Date")  
         print("5. Exit")                    
 
-        option = input("Choose an option: ")
+        option = input("Choose an option:\n ")
 
         if option == "1":
             view_inventory(inventory)
