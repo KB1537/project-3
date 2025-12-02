@@ -8,11 +8,20 @@ Features:
 - Push updated stock + sales back to Google Sheets
 """
 
+"""
+Google Sheets Structure:
+Sheet1: Inventory → SKU | Name | Quantity | Price
+Sheet2: Sales     → Date | SKU | Qty Sold | Price | Customer
+"""
+
 import os
 import gspread
 from datetime import datetime
 from google.oauth2.service_account import Credentials
 
+
+
+# ---------------- GOOGLE SHEETS CONNECTION ---------------- #
 
 SCOPE=[
  "https://www.googleapis.com/auth/spreadsheets",
@@ -24,11 +33,39 @@ SCOPE=[
 CREDS=Credentials.from_service_account_file('creds/creds.json')
 SCOPED_CREDS=CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT=gspread.authorize(SCOPED_CREDS)
+
+
+# Open Google Sheet
 SHEET=GSPREAD_CLIENT.open('Inventory_Manager')
+INVENTORY_WS = SHEET.worksheet("Inventory")
+SALES_WS = SHEET.worksheet("Sales")
 
 
-sales=SHEET.worksheet('Sales')
 
-data=sales.get_all_values()
+# ---------------------------------------------------------- #
+#                      LOAD INVENTORY                        #
+# ---------------------------------------------------------- #
 
-print(data)
+def load_inventory():
+    """
+    Load inventory into a list of dicts from Google Sheets.
+    Columns: SKU, Name, Stock, Price, Category
+    """
+    data = INVENTORY_WS.get_all_values()[1:]  # skips header row
+    inventory = []
+
+    for row in data:
+        if len(row) < 5:
+            continue
+
+        inventory.append({
+            "sku": row[0],
+            "name": row[1],
+            "stock": int(row[2]),
+            "price": float(row[3]),
+            "category": row[4]
+        })
+
+    print(f"✓ Loaded {len(inventory)} items from Google Sheets.")
+    return inventory
+
