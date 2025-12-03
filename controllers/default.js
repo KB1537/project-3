@@ -50,11 +50,27 @@ function socket() {
 }
 
 if (process.env.CREDS != null) {
-    console.log("Creating creds.json file.");
-    fs.writeFile('creds.json', process.env.CREDS, 'utf8', function (err) {
-        if (err) {
-            console.log('Error writing file: ', err);
-            socket.emit("console_output", "Error saving credentials: " + err);
-        }
-    });
+    console.log("Creating creds/creds.json file.");
+
+    // Ensure the 'creds' directory exists
+    const credsDir = path.join(process.cwd(), 'creds');
+    fs.mkdirSync(credsDir, { recursive: true });
+
+    // Write the credentials JSON file
+    const credsPath = path.join(credsDir, 'creds.json');
+    fs.writeFileSync(credsPath, process.env.CREDS, 'utf8');
+
+    console.log("creds/creds.json file created successfully.");
 }
+
+
+
+//if (process.env.CREDS != null) {
+    //console.log("Creating creds.json file.");
+    //fs.writeFile('creds.json', process.env.CREDS, 'utf8', function (err) {
+        //if (err) {
+        //    console.log('Error writing file: ', err);
+      //      socket.emit("console_output", "Error saving credentials: " + err);
+    //    }
+  //  });
+//}
