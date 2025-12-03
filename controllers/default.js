@@ -53,16 +53,24 @@ function socket() {
 if (process.env.CREDS != null) {
     console.log("Creating creds/creds.json file.");
 
-    // Ensure the 'creds' directory exists
     const credsDir = path.join(process.cwd(), 'creds');
     fs.mkdirSync(credsDir, { recursive: true });
 
-    // Write the credentials JSON file
     const credsPath = path.join(credsDir, 'creds.json');
-    fs.writeFileSync(credsPath, process.env.CREDS, 'utf8');
 
-    console.log("creds/creds.json file created successfully.");
+    try {
+        // Parse the environment variable as JSON first
+        const credsJson = JSON.parse(process.env.CREDS);
+
+        // Write valid JSON to creds.json
+        fs.writeFileSync(credsPath, JSON.stringify(credsJson, null, 2), 'utf8');
+
+        console.log("creds/creds.json file created successfully.");
+    } catch (err) {
+        console.error("Invalid JSON in CREDS environment variable:", err);
+    }
 }
+
 
 
 
