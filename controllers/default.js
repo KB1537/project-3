@@ -1,5 +1,6 @@
 const Pty = require('node-pty');
 const fs = require('fs');
+const path = require('path');
 
 exports.install = function () {
 
